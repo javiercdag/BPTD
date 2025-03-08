@@ -7,8 +7,9 @@
 ATDGameMode::ATDGameMode()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL)
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Player/BP_Player"));
+
+	if (PlayerPawnBPClass.Class)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
