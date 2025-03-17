@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "IDamageable.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "TDCharacter.generated.h"
@@ -16,7 +17,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class ATDCharacter : public ACharacter
+class ATDCharacter : public ACharacter, public IDamageable
 {
 	GENERATED_BODY()
 
@@ -49,21 +50,25 @@ public:
 	
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Damage)
+	float HitPoints;
+
+	void SetHitPoints_Implementation(float hitPoints) override;
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
-
-protected:
 
 	virtual void NotifyControllerChanged() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
+	float GetHitPoints_Implementation() override;
+	void ApplyHitDamage_Implementation(float damageAmount) override;
+	
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/

@@ -92,6 +92,21 @@ void ATDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	}
 }
 
+float ATDCharacter::GetHitPoints_Implementation()
+{
+	return HitPoints;
+}
+
+void ATDCharacter::ApplyHitDamage_Implementation(float damageAmount)
+{
+	SetHitPoints(FMath::Max(0, HitPoints - damageAmount));
+}
+
+void ATDCharacter::SetHitPoints_Implementation(float hitPoints)
+{
+	HitPoints = hitPoints;
+}
+
 void ATDCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
