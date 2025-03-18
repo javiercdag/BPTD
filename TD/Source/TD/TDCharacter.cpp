@@ -102,14 +102,20 @@ void ATDCharacter::Tick(float DeltaSeconds)
 
 	if (IsAiming)
 	{
-		// Move the camera to a custom position smoothly
 		FVector NewLocation = FMath::VInterpTo(FollowCamera->GetRelativeLocation(), ADSCameraOffset, DeltaSeconds, 5.0f);
 		FollowCamera->SetRelativeLocation(NewLocation);
+
+		if (Controller)
+		{
+			FRotator CameraRotation = Controller->GetControlRotation();
+			FRotator NewCharacterRotation = FRotator(0.0f, CameraRotation.Yaw, 0.0f);
+
+			SetActorRotation(NewCharacterRotation);
+		}
 	}
 	else
 	{
-		// Move the camera back to its original position
-		FVector DefaultLocation = FVector(0.0f, 0.0f, 0.0f); // Default spring arm offset
+		FVector DefaultLocation = FVector(0.0f, 0.0f, 0.0f);
 		FVector NewLocation = FMath::VInterpTo(FollowCamera->GetRelativeLocation(), DefaultLocation, DeltaSeconds, 5.0f);
 		FollowCamera->SetRelativeLocation(NewLocation);
 	}
@@ -169,10 +175,11 @@ void ATDCharacter::Look(const FInputActionValue& Value)
 void ATDCharacter::BeginADS(const FInputActionValue& InputActionValue)
 {
 	IsAiming = true;
-	GetMovementComponent()->o
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void ATDCharacter::EndADS(const FInputActionValue& InputActionValue)
 {
 	IsAiming = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
