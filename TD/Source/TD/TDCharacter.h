@@ -45,13 +45,23 @@ class ATDCharacter : public ACharacter, public IDamageable
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	/** ADS Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ADSAction;
+
 public:
 	ATDCharacter();
 	
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Damage)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
 	float HitPoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
+	bool IsAiming;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Combat)
+	FVector ADSCameraOffset;
 
 	void SetHitPoints_Implementation(float hitPoints) override;
 
@@ -61,9 +71,14 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
-	virtual void NotifyControllerChanged() override;
+	void BeginADS(const FInputActionValue& InputActionValue);
+	void EndADS(const FInputActionValue& InputActionValue);
 
+	virtual void NotifyControllerChanged() override;
+	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	float GetHitPoints_Implementation() override;

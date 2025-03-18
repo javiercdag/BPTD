@@ -85,10 +85,33 @@ void ATDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ATDCharacter::Look);
+		
+		// ADS
+		EnhancedInputComponent->BindAction(ADSAction, ETriggerEvent::Started, this, &ATDCharacter::BeginADS);
+		EnhancedInputComponent->BindAction(ADSAction, ETriggerEvent::Triggered, this, &ATDCharacter::EndADS);
 	}
 	else
 	{
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+}
+
+void ATDCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (IsAiming)
+	{
+		// Move the camera to a custom position smoothly
+		FVector NewLocation = FMath::VInterpTo(FollowCamera->GetRelativeLocation(), ADSCameraOffset, DeltaSeconds, 5.0f);
+		FollowCamera->SetRelativeLocation(NewLocation);
+	}
+	else
+	{
+		// Move the camera back to its original position
+		FVector DefaultLocation = FVector(0.0f, 0.0f, 0.0f); // Default spring arm offset
+		FVector NewLocation = FMath::VInterpTo(FollowCamera->GetRelativeLocation(), DefaultLocation, DeltaSeconds, 5.0f);
+		FollowCamera->SetRelativeLocation(NewLocation);
 	}
 }
 
@@ -141,4 +164,15 @@ void ATDCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ATDCharacter::BeginADS(const FInputActionValue& InputActionValue)
+{
+	IsAiming = true;
+	GetMovementComponent()->o
+}
+
+void ATDCharacter::EndADS(const FInputActionValue& InputActionValue)
+{
+	IsAiming = false;
 }
