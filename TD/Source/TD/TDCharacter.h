@@ -49,6 +49,10 @@ class ATDCharacter : public ACharacter, public IDamageable
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ADSAction;
 
+	/** Firing Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* FireAction;
+
 public:
 	ATDCharacter();
 	
@@ -73,6 +77,8 @@ protected:
 
 	void BeginADS(const FInputActionValue& InputActionValue);
 	void EndADS(const FInputActionValue& InputActionValue);
+
+	void Fire(const FInputActionValue& InputActionValue);
 
 	virtual void NotifyControllerChanged() override;
 	

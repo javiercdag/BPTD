@@ -89,6 +89,9 @@ void ATDCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		// ADS
 		EnhancedInputComponent->BindAction(ADSAction, ETriggerEvent::Started, this, &ATDCharacter::BeginADS);
 		EnhancedInputComponent->BindAction(ADSAction, ETriggerEvent::Triggered, this, &ATDCharacter::EndADS);
+
+		// Shooting
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ATDCharacter::Fire);
 	}
 	else
 	{
@@ -182,4 +185,27 @@ void ATDCharacter::EndADS(const FInputActionValue& InputActionValue)
 {
 	IsAiming = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+}
+
+void ATDCharacter::Fire(const FInputActionValue& InputActionValue)
+{
+	FHitResult hitResult;
+	FVector Start = GetFollowCamera()->GetComponentLocation();
+	FVector End = GetFollowCamera()->GetComponentLocation() + 20000 * GetFollowCamera()->GetComponentRotation().Vector();
+
+	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Blue, false, 3.0f, 0, 2.0f);
+	
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, Start, End, ECC_Visibility))
+	{
+		if (hitResult.IsValidBlockingHit())
+		{
+			AActor* HitActor = hitResult.GetActor();
+ 
+			if (HitActor->Implements<UDamageable>())
+			{
+				Execute_ApplyHitDamage(HitActor, 1.0f);
+			}
+		}
+	}
+
 }
