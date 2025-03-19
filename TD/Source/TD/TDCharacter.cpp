@@ -195,7 +195,7 @@ void ATDCharacter::Fire(const FInputActionValue& InputActionValue)
 
 	DrawDebugDirectionalArrow(GetWorld(), Start, End, 10.0f, FColor::Blue, false, 3.0f, 0, 2.0f);
 	
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, Start, End, ECC_Visibility))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, Start, End, ECC_GameTraceChannel1 ))
 	{
 		if (hitResult.IsValidBlockingHit())
 		{
